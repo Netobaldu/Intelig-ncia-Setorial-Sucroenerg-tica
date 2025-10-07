@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inteligência Setorial Sucroenergética</title>
+    
+
+<script src="https://cdn.tailwindcss.com"></script>
+    
+
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-light': '#FFFFFF',
+                        'primary-text': '#374151', // Cinza escuro suave (Base para Header e Nav)
+                        'accent-data': '#374151', // Cinza escuro para substituir o âmbar/laranja
+                        'highlight-red': '#B91C1C',
+                        'secondary-accent': '#059669', // Verde Esmeralda Digital (Para detalhes internos e insights)
+                        'button-active': '#047857',
+                        'card-bg': '#F9FAFB', 
+                        'insight-bg': '#F7F8F9', 
+                        'dark-header': '#212121', // Cinza muito escuro
+                        'dark-accent': '#374151', // Novo cinza para destaques secundários
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft-lg': '0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.04)',
+                        'soft-xl': '0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos Globais e Reset */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F4F4F4; 
+            color: #374151;
+        }
+
+        /* Tooltips */
+        .tooltip-container { position: relative; }
+        .tooltip {
+            visibility: hidden; background-color: #047857; color: #FFFFFF; text-align: center;
+            border-radius: 6px; padding: 5px 10px; position: absolute; z-index: 10; bottom: 125%;
+            left: 50%; transform: translateX(-50%); opacity: 0; transition: opacity 0.3s; width: 250px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .tooltip-container:hover .tooltip { visibility: visible; opacity: 1; }
+        .tooltip::after {
+            content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px;
+            border-style: solid; border-color: #047857 transparent transparent transparent;
+        }
+
+        /* Navegação (Pílulas modernas e dinâmicas) */
+        .tab-button {
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+            border-radius: 9999px; margin: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); 
+        }
+        .tab-button.active {
+            /* Cinza Escuro para Ferramenta de Seleção Ativa */
+            background-image: linear-gradient(135deg, #374151 0%, #212121 100%); 
+            color: #FFFFFF;
+            box-shadow: 0 4px 15px rgba(55, 65, 81, 0.5); /* Sombra cinza */
+            font-weight: 600;
+            transform: translateY(-1px);
+        }
+        .tab-button:hover:not(.active) {
+            background-color: #E5E7EB;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Cartões de Dados com Elevação e Borda Lateral (Didática) */
+        .data-card {
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); 
+            border-left: 6px solid transparent; 
+        }
+        .data-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); 
+        }
+        .data-card.accent-l-green { border-left-color: #059669; }
+        /* Substituindo o laranja/gold por cinza escuro */
+        .data-card.accent-l-gold { border-left-color: #374151; } 
+        .data-card.accent-l-red { border-left-color: #B91C1C; }
+
+        /* Botão de Insight (Revelação) */
+        .insight-toggle-btn {
+            /* Mantém o verde para contraste e significado (Análise de Valor) */
+            background-color: #059669; 
+            transition: all 0.3s;
+            box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3);
+        }
+        .insight-toggle-btn:hover {
+            background-color: #047857;
+            box-shadow: 0 4px 10px rgba(5, 150, 105, 0.5);
+        }
+
+        /* Conteúdo do Insight (Animação mais elegante) */
+        .insight-content {
+            transition: max-height 0.6s ease-in-out, padding 0.6s ease-in-out, margin 0.6s ease-in-out;
+            overflow: hidden;
+            max-height: 0;
+            padding: 0 1rem;
+            margin-top: 0;
+        }
+        .insight-content.revealed {
+            max-height: 500px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Header com Gradiente Suave (Cinza Escuro) */
+        .dynamic-header {
+            background-image: linear-gradient(to right, #374151, #212121); 
+            box-shadow: 0 8px 16px rgba(55, 65, 81, 0.5); /* Sombra Cinza */
+        }
+        
+        /* Estilo para as barras do Simulador */
+        .impact-bar {
+            height: 14px; 
+            border-radius: 9999px;
+            transition: width 0.5s ease-in-out;
+        }
+
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <header class="text-center mb-12 p-6 dynamic-header rounded-xl shadow-xl">
+        
+
+<img src="https://i.postimg.cc/QdxSFw8z/det.png" alt="Logomarca DET: Inteligência Estratégica" onerror="this.onerror=null; this.src='https://placehold.co/100x40/374151/FFFFFF?text=DET'" class="w-20 md:w-24 mx-auto mb-4"/>
+        <h1 class="text-4xl md:text-6xl font-extrabold text-primary-light tracking-tight">
+            INTELIGÊNCIA SETORIAL SUCROENERGÉTICA
+        </h1>
+        <p class="text-lg md:text-xl mt-3 text-primary-light/90 font-light">
+            Análise Estratégica Detalhada no Brasil e em Goiás (Safra 2024/25 e Projeções)
+        </p>
+    </header>
+
+    <main class="max-w-7xl mx-auto bg-primary-light p-6 md:p-10 rounded-3xl shadow-soft-xl border border-gray-100">
+
+        
+
+<div class="flex flex-wrap justify-center mb-8 border-b border-gray-200 pb-3">
+            <button class="tab-button py-3 px-5 text-sm md:text-base font-medium text-primary-text bg-gray-100" onclick="showSection('panorama')">
+                1. Safra Recorde & Projeção
+            </button>
+            <button class="tab-button py-3 px-5 text-sm md:text-base font-medium text-primary-text bg-gray-100" onclick="showSection('produtores')">
+                2. Grupos, Goiás & Emprego
+            </button>
+            <button class="tab-button py-3 px-5 text-sm md:text-base font-medium text-primary-text bg-gray-100" onclick="showSection('comercio')">
+                3. Comércio Global & Custo
+            </button>
+            <button class="tab-button py-3 px-5 text-sm md:text-base font-medium text-primary-text bg-gray-100" onclick="showSection('simulador_mix')">
+                4. Simulador de Mix & Trade-Off
+            </button>
+            <button class="tab-button py-3 px-5 text-sm md:text-base font-medium text-primary-text bg-gray-100" onclick="showSection('investimentos')">
+                5. Investimentos & Expansão em GO
+            </button>
+            <button class="tab-button py-3 px-5 text-sm md:text-base font-medium text-primary-text bg-gray-100" onclick="showSection('gargalo_humano')">
+                6. Gargalo Humano & Qualificação
+            </button>
+            <button class="tab-button py-3 px-5 text-sm md:text-base font-medium text-primary-text bg-gray-100" onclick="showSection('tecnologia_ia')">
+                7. Tecnologia & IA (Usinas 4.0)
+            </button>
+            <button class="tab-button py-3 px-5 text-sm md:text-base font-medium text-primary-text bg-gray-100" onclick="showSection('outlook')">
+                8. Outlook & Monitoramento
+            </button>
+        </div>
+
+        
+
+<section id="panorama" class="content-section">
+            <h2 class="text-3xl font-bold text-secondary-accent mb-4">1. Ciclo 2024/25: Recordes Atingidos e Aperto de 2025/26</h2>
+            <p class="text-primary-text mb-6 border-b border-gray-200 pb-4">
+                A safra 2024/25, encerrada em abril, marcou **recordes históricos de produção e vendas de etanol** no Centro-Sul, impulsionados pela demanda interna e condições de mercado favoráveis. No entanto, o cenário para 2025/26 é de cautela, com projeções de **retração na moagem e na qualidade da cana (ATR)**, resultado direto da irregularidade climática que impactou o desenvolvimento da lavoura no início do ciclo anterior.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                
+
+<div class="data-card bg-card-bg p-6 rounded-xl accent-l-green shadow-soft-lg">
+                    <p class="text-lg font-semibold text-primary-text"> Produção Etanol (2024/25)</p>
+                    <p class="text-4xl font-extrabold text-secondary-accent mt-2">36,83 bi L</p>
+                    <p class="text-sm font-bold text-dark-accent mt-1">(+4,4% vs 2023)</p>
+                    <p class="text-xs text-gray-500 mt-3">Novo recorde de oferta no Centro-Sul. Fonte: [UNICA+1]</p>
+                </div>
+                
+
+<div class="data-card bg-card-bg p-6 rounded-xl accent-l-green shadow-soft-lg">
+                    <p class="text-lg font-semibold text-primary-text"> Vendas Etanol (2024)</p>
+                    <p class="text-4xl font-extrabold text-secondary-accent mt-2">35,58 bi L</p>
+                    <p class="text-sm font-bold text-dark-accent mt-1">(+8,4% vs 2023)</p>
+                    <p class="text-xs text-gray-500 mt-3">Alta demanda e competitividade do hidratado. Fonte: [UNICA+1]</p>
+                </div>
+                 
+
+<div class="data-card bg-card-bg p-6 rounded-xl accent-l-gold shadow-soft-lg">
+                    <p class="text-lg font-semibold text-primary-text"> Exportação Açúcar (2024)</p>
+                    <p class="text-4xl font-extrabold text-dark-accent mt-2">38,24 mi t</p>
+                    <p class="text-sm font-bold text-secondary-accent mt-1">Recorde Histórico</p>
+                    <p class="text-xs text-gray-500 mt-3">Aproveitamento de preços internacionais e baixa oferta indiana. Fonte: [canaonline.com.br+2]</p>
+                </div>
+            </div>
+
+            
+
+<div class="bg-card-bg p-6 rounded-xl shadow-soft-lg mt-8 border border-gray-200">
+                <h3 class="text-xl font-semibold mb-4 text-highlight-red"> Projeção de Aperto 2025/26 (Centro-Sul)</h3>
+                <p class="text-sm text-gray-500 mb-6">Fonte: [CNA, CONAB] | Período: Projeção 2025/26 vs 2024/25</p>
+
+                <div class="space-y-4">
+                    
+
+<div class="flex items-center">
+                        <span class="w-1/4 font-semibold text-primary-text">Moagem (Cana)</span>
+                        <div class="w-3/4 h-6 bg-gray-200 rounded-full flex items-center">
+                            <div class="chart-bar h-6 bg-highlight-red rounded-full" style="width: 4.6%;"></div>
+                            <span class="ml-2 text-highlight-red font-bold">-4,6%</span>
+                        </div>
+                    </div>
+                    
+
+<div class="flex items-center">
+                        <span class="w-1/4 font-semibold text-primary-text">Produtividade (TCH)</span>
+                        <div class="w-3/4 h-6 bg-gray-200 rounded-full flex items-center">
+                            <div class="chart-bar h-6 bg-highlight-red rounded-full" style="width: 4.1%;"></div>
+                            <span class="ml-2 text-highlight-red font-bold">-4,1%</span>
+                        </div>
+                    </div>
+                    
+
+<div class="flex items-center">
+                        <span class="w-1/4 font-semibold text-primary-text">Qualidade (ATR)</span>
+                        <div class="w-3/4 h-6 bg-gray-200 rounded-full flex items-center">
+                            <div class="chart-bar h-6 bg-highlight-red rounded-full" style="width: 1.6%;"></div>
+                            <span class="ml-2 text-highlight-red font-bold">-1,6%</span>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+<button class="insight-toggle-btn w-full mt-6 py-3 px-4 bg-secondary-accent text-primary-light font-bold rounded-lg hover:bg-button-active transition duration-300" 
+                        onclick="toggleInsight('insight-1')">
+                    Análise Estratégica: Mix de Produção
+                </button>
+                
+
+<div id="insight-1" class="insight-content bg-insight-bg rounded-lg border-l-4 border-dark-accent">
+                    <p class="text-sm text-primary-text">
+                        O declínio na qualidade da matéria-prima (ATR/TCH) projetado para 2025/26 eleva a importância do **mix de produção**. Espera-se que a indústria maximize a rentabilidade priorizando o **Açúcar** (VHP), produto de maior valor no mercado internacional, em detrimento do Etanol Hidratado. Essa estratégia visa diluir o custo fixo da tonelada de cana em um volume menor de produção.
+                    </p>
+                    <p class="text-xs text-gray-500 mt-2 font-semibold">Fonte: [CNA, CONAB - Projeção 2025/26]</p>
+                </div>
+            </div>
+        </section>
+
+        
+
+<section id="produtores" class="content-section hidden">
+            <h2 class="text-3xl font-bold text-secondary-accent mb-4">2. Grupos, Goiás & Emprego: Estrutura de Poder e Diversificação</h2>
+            <p class="text-primary-text mb-6 border-b border-gray-200 pb-4">
+                O setor sucroenergético brasileiro é caracterizado pela alta concentração, com grupos gigantes como a **Raízen** dominando a moagem nacional. No entanto, Goiás se consolida como o **3º maior estado produtor de cana** (78,5 mi t na 24/25), destacando-se não apenas pelo volume, mas pela capacidade de **diversificação** com o etanol de milho, mantendo um saldo positivo e relevante na geração de emprego formal na região Centro-Oeste [Portal Goiás+1, CAGED].
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+                
+
+<div class="data-card bg-card-bg p-6 rounded-xl accent-l-green shadow-soft-lg">
+                    <h3 class="text-xl font-bold text-secondary-accent mb-4"> Top Grupos Nacionais (Moagem 2024/25)</h3>
+                    <p class="text-sm text-gray-500 mb-4">Fonte: [Visão Agro+1, FG/A 2025] | Estimativa de Participação no Centro-Sul</p>
+
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center text-primary-text border-b border-gray-200 pb-1">
+                            <span class="font-semibold">1. Raízen</span>
+                            <span class="text-sm text-dark-accent font-bold">~78,3 mi t (~12,6%)</span>
+                        </div>
+                        <div class="flex justify-between items-center text-primary-text border-b border-gray-200 pb-1">
+                            <span class="font-semibold">2. BP Bunge Bioenergia</span>
+                            <span class="text-sm text-secondary-accent">Grande Escala</span>
+                        </div>
+                        <div class="flex justify-between items-center text-primary-text border-b border-gray-200 pb-1">
+                            <span class="font-semibold">3. Atvos</span>
+                            <span class="text-sm text-secondary-accent">Forte presença no CO</span>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+<div class="data-card bg-card-bg p-6 rounded-xl accent-l-green shadow-soft-lg">
+                    <h3 class="text-xl font-bold text-secondary-accent mb-4"> Goiás: Tração e Recordes (Safra 2024/25)</h3>
+                    <p class="text-sm text-gray-500 mb-4">Fonte: [Portal Goiás+1, SIFAEG+1] | Período: Safra 2024/25 (Estimada)</p>
+                    
+                    <ul class="space-y-3">
+                        <li class="flex justify-between items-center text-primary-text border-b border-gray-200 pb-1">
+                            <span class="font-semibold">Cana Moída (Estimativa)</span>
+                            <span class="text-lg text-dark-accent font-bold">78,5 mi t</span>
+                        </li>
+                        <li class="flex justify-between items-center text-primary-text border-b border-gray-200 pb-1">
+                            <span class="font-semibold">Rank Nacional</span>
+                            <span class="text-lg text-secondary-accent font-bold">3º Maior Produtor</span>
+                        </li>
+                        <li class="flex justify-between items-center text-primary-text border-b border-gray-200 pb-1">
+                            <span class="font-semibold">Produção Etanol</span>
+                            <span class="text-lg text-dark-accent font-bold">~4,87 bi L (+2,7%)</span>
+                        </li>
+                    </ul>
+
+                    <div class="mt-6 p-3 bg-gray-100 rounded-lg border-l-4 border-dark-accent shadow-inner">
+                        <p class="text-sm font-semibold text-secondary-accent"> EMPREGO FORMAL (GO)</p>
+                        <p class="text-xs text-primary-text">O setor foi destaque na **geração de empregos formais** no início de 2025 [CAGED, FGV IBRE+2].</p>
+                    </div>
+                </div>
+
+                
+
+<div class="data-card bg-card-bg p-6 rounded-xl accent-l-gold shadow-soft-lg">
+                    <h3 class="text-xl font-bold text-dark-accent mb-4"> Top Players em Goiás (Capacidade)</h3>
+                    <p class="text-sm text-gray-500 mb-4">Ranking Simulado por Escala Projetada/Ativa. Fonte: [SIFAEG+1, Fitch Ratings+2]</p>
+
+                    <ul class="space-y-3">
+                        <li class="flex justify-between items-center text-primary-text border-b border-gray-200 pb-1">
+                            <span class="font-semibold text-lg text-secondary-accent">#1 Jalles Machado</span>
+                            <span class="text-sm text-dark-accent font-bold">~9,0 mi t (Projetado)</span>
+                        </li>
+                        <li class="flex justify-between items-center text-primary-text border-b border-gray-200 pb-1">
+                            <span class="font-semibold text-lg text-secondary-accent">#2 Atvos</span>
+                            <span class="text-sm text-primary-text">Forte Posição no CO</span>
+                        </li>
+                        <li class="flex justify-between items-center text-primary-text border-b border-gray-200 pb-1">
+                            <span class="font-semibold text-lg text-secondary-accent">#3 Cerradinho Bioenergia</span>
+                            <span class="text-sm text-primary-text">Expansão Milho/VHP</span>
+                        </li>
+                    </ul>
+                </div>
+
+                
+
+<div class="data-card bg-card-bg p-6 rounded-xl accent-l-green shadow-soft-lg">
+                    <h3 class="text-xl font-bold text-secondary-accent mb-4"> Perfil: Jalles Machado (Foco Premium)</h3>
+                    <p class="text-sm text-gray-500 mb-4">Sede em Goianésia. Escala e Verticalização. Fonte: [jalles.com+3, Soluções Santander+3]</p>
+
+                    <ul class="space-y-3">
+                        <li class="flex justify-between items-center text-primary-text border-b border-gray-200 pb-1">
+                            <span class="font-semibold">Unidades em GO</span>
+                            <span class="text-lg text-dark-accent font-bold">2 (Jalles + Otávio Lage)</span>
+                        </li>
+                        <li class="flex justify-between items-center text-primary-text border-b border-gray-200 pb-1">
+                            <span class="font-semibold">Diversificação</span>
+                            <span class="text-sm text-secondary-accent font-bold">Biometano / Bioeletricidade</span>
+                        </li>
+                    </ul>
+
+                    
+
+<button class="insight-toggle-btn w-full mt-6 py-3 px-4 bg-secondary-accent text-primary-light font-bold rounded-lg hover:bg-button-active transition duration-300" 
+                            onclick="toggleInsight('insight-2-jalles')">
+                        Análise Estratégica: Modelo de Valor
+                    </button>
+                    
+
+<div id="insight-2-jalles" class="insight-content bg-insight-bg rounded-lg border-l-4 border-dark-accent">
+                        <p class="text-xs text-primary-text">
+                            A Jalles é a referência de verticalização em GO. Seu foco em **açúcar premium (VVHP/Orgânico)** e biocombustíveis avançados (Biometano) protege a margem contra a volatilidade das commodities de volume, sendo um modelo de valor agregado.
+                        </p>
+                        <p class="text-xs text-gray-500 mt-2 font-semibold">Fonte: [Fitch Ratings+2, Cana Online+3]</p>
+                    </div>
+                </div>
+            </div>
+
+            
+
+<button class="insight-toggle-btn w-full mt-8 py-3 px-4 bg-secondary-accent text-primary-light font-bold rounded-lg hover:bg-button-active transition duration-300" 
+                    onclick="toggleInsight('insight-2-general')">
+                Análise Estratégica: Vantagem Competitiva de Goiás
+            </button>
+            
+
+<div id="insight-2-general" class="insight-content bg-insight-bg rounded-lg border-l-4 border-dark-accent">
+                <p class="text-sm text-primary-text">
+                    A sinergia do **Etanol de Milho** é a maior vantagem competitiva de Goiás. Ao operar fora da sazonalidade da cana, a produção goiana garante **oferta constante (12 meses)** de biocombustível, amortecendo a volatilidade do Etanol/Açúcar da cana e atraindo investimentos de longo prazo. A disputa por escala entre **Jalles, Atvos e Cerradinho** define o ritmo de inovação regional.
+                </p>
+                <p class="text-xs text-gray-500 mt-2 font-semibold">Fonte: [UNICA Data, 2024]</p>
+            </div>
+        </section>
+
+        
+
+<section id="comercio" class="content-section hidden">
+            <h2 class="text-3xl font-bold text-secondary-accent mb-4">3. Comércio Global e o Impacto do Custo Brasil</h2>
+            <p class="text-primary-text mb-6 border-b border-gray-200 pb-4">
+                O superávit comercial brasileiro em 2024 foi robusto, com o açúcar e o melaço figurando entre os destaques da indústria de transformação. O Brasil se mantém como principal fornecedor mundial, com a **Indonésia, China e Índia** (em 2024) entre os destinos mais importantes. No front interno, a alta carga tributária (Custo Brasil) e o risco de paridade desfavorável com a gasolina fóssil continuam sendo os principais desafios estruturais [CNN Brasil+1, CNA].
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+
+<div class="lg:col-span-2 data-card bg-card-bg p-6 rounded-xl accent-l-gold shadow-soft-lg">
+                    <h3 class="text-2xl font-bold text-dark-accent mb-4"> Açúcar: Principais Destinos de Exportação (2024)</h3>
+                    <p class="text-sm text-gray-500 mb-4">Valor Total 2024: US$ 18,6 Bilhões | Fonte: [Forbes Brasil+2, canaonline.com.br+2]</p>
+
+                    <div class="grid grid-cols-5 gap-2 text-center text-primary-text">
+                        <div class="tooltip-container">
+                            <p class="text-lg font-bold">Indonésia</p>
+                            <div class="tooltip">
+                                <p class="text-xs font-semibold">Principal comprador global de açúcar bruto em 2024.</p>
+                            </div>
+                        </div>
+                        <div class="tooltip-container">
+                            <p class="text-lg font-bold">Índia</p>
+                            <div class="tooltip">
+                                <p class="text-xs font-semibold">Importação atípica devido à baixa oferta interna indiana.</p>
+                            </div>
+                        </div>
+                        <div class="tooltip-container">
+                            <p class="text-lg font-bold">China</p>
+                            <div class="tooltip">
+                                <p class="text-xs font-semibold">Comprador estrutural de grande volume.</p>
+                            </div>
+                        </div>
+                        <div class="tooltip-container">
+                            <p class="text-lg font-bold">EAU</p>
+                            <div class="tooltip">
+                                <p class="text-xs font-semibold">Hub de reexportação e mercado regional.</p>
+                            </div>
+                        </div>
+                        <div class="tooltip-container">
+                            <p class="text-lg font-bold">Argélia</p>
+                            <div class="tooltip">
+                                <p class="text-xs font-semibold">Mercado norte-africano em expansão.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mt-6 text-sm font-semibold text-primary-text">Etanol (Fluxo): O Brasil é exportador (<span class="font-bold">US$ 182 mi para EUA em 2024</span>) e importador [fuelbroker.com.br+2].</p>
+                </div>
+
+                
+
+<div class="data-card bg-card-bg p-6 rounded-xl accent-l-red shadow-soft-lg">
+                    <h3 class="text-2xl font-bold text-highlight-red mb-4"> Desafios: Tributos e Competição</h3>
+                    <div class="space-y-3 text-sm text-primary-text">
+                        <div class="border-b border-gray-200 pb-1">
+                            <p class="font-semibold text-lg">Carga Tributária</p>
+                            <p class="text-xs text-gray-500">Reforma Tributária gera incerteza sobre a carga efetiva, especialmente PIS/COFINS e ICMS na cadeia [CNI, CNA].</p>
+                        </div>
+                        <div class="border-b border-gray-200 pb-1">
+                            <p class="font-semibold text-lg">Volatilidade (Mix)</p>
+                            <p class="text-xs text-gray-500">O preço internacional do açúcar e do petróleo define o **mix de produção** [CNA].</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+
+<button class="insight-toggle-btn w-full mt-8 py-3 px-4 bg-secondary-accent text-primary-light font-bold rounded-lg hover:bg-button-active transition duration-300" 
+                    onclick="toggleInsight('insight-3-general')">
+                Análise Estratégica: Risco da Paridade Etanol
+            </button>
+            
+
+<div id="insight-3-general" class="insight-content bg-insight-bg rounded-lg border-l-4 border-dark-accent">
+                <p class="text-primary-text text-sm">
+                    A **volatilidade do petróleo** (que determina o preço da gasolina) representa o maior risco de demanda para o etanol hidratado. O preço do etanol de milho (Goiás) é menos suscetível a choques de preço do açúcar, conferindo maior estabilidade à receita quando a **paridade Etanol/Gasolina** fica desfavorável nos postos.
+                </p>
+                <p class="text-xs text-gray-500 mt-2 font-semibold">Fonte: [CNA - Análise de Paridade]</p>
+            </div>
+        </section>
+
+        
+
+<section id="simulador_mix" class="content-section hidden">
+            <h2 class="text-3xl font-bold text-secondary-accent mb-4">4. Simulador de Mix: O Trade-Off Açúcar vs. Etanol</h2>
+            <p class="text-primary-text mb-6 border-b border-gray-200 pb-4">
+                O **mix de produção** é a principal alavanca de gestão das usinas, determinando como a cana moída será convertida. Este simulador interativo modela o dilema fundamental: a priorização do **Açúcar** maximiza o aproveitamento dos preços globais em dólar, enquanto a priorização do **Etanol** maximiza a geração de créditos de descarbonização (CBIOs) e o atendimento à demanda doméstica por biocombustíveis [CNA, UNICA Data].
+            </p>
+            
+            <div class="bg-card-bg p-8 rounded-xl shadow-2xl border-t-4 border-dark-accent">
+
+                
+
+<div class="flex justify-between text-2xl font-extrabold mb-4 border-b pb-2 border-gray-300">
+                    <span id="label-sugar-mix" class="text-dark-accent"> Açúcar: 50%</span>
+                    <span id="label-ethanol-mix" class="text-secondary-accent"> Etanol: 50%</span>
+                </div>
+
+                
+
+<input type="range" id="mix-slider" min="35" max="65" value="50" step="1" oninput="updateMixSimulator(this.value)">
+                
+                <div class="flex justify-between text-xs font-light mt-2 text-primary-text/70">
+                    <span class="text-secondary-accent font-semibold">← Maior Etanol (Max Sustentabilidade)</span>
+                    <span class="text-dark-accent font-semibold">Maior Açúcar (Max Receita) →</span>
+                </div>
+
+                
+
+<div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    
+                    
+
+<div class="bg-white p-5 rounded-lg border border-dark-accent/50 shadow-inner">
+                        <p class="text-xl font-semibold text-dark-accent mb-3"> Receita Potencial (Mercado Global)</p>
+                        <p class="text-sm text-gray-500 mb-4">Simulação do aproveitamento de altos preços do açúcar no mercado externo.</p>
+                        
+                        <div class="w-full bg-gray-200 rounded-lg">
+                            <div id="revenue-impact-bar" class="impact-bar bg-dark-accent" style="width: 50%;"></div>
+                        </div>
+                        
+                        <div class="mt-3 text-2xl font-extrabold text-dark-accent">
+                            Nível: <span id="revenue-level">Médio</span>
+                        </div>
+                    </div>
+
+                    
+
+<div class="bg-white p-5 rounded-lg border border-secondary-accent/50 shadow-inner">
+                        <p class="text-xl font-semibold text-secondary-accent mb-3"> Valor de Descarbonização (RenovaBio)</p>
+                        <p class="text-sm text-gray-500 mb-4">Simulação da geração de CBIOs e atendimento à demanda doméstica por biocombustível.</p>
+
+                        <div class="w-full bg-gray-200 rounded-lg">
+                            <div id="cbio-impact-bar" class="impact-bar bg-secondary-accent" style="width: 50%;"></div>
+                        </div>
+
+                        <div class="mt-3 text-2xl font-extrabold text-secondary-accent">
+                            Nível: <span id="cbio-level">Médio</span>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+<button class="insight-toggle-btn w-full mt-8 py-3 px-4 bg-secondary-accent text-primary-light font-bold rounded-lg hover:bg-button-active transition duration-300" 
+                        onclick="toggleInsight('insight-5-general')">
+                    Análise Estratégica: O Equilíbrio Dinâmico
+                </button>
+                
+
+<div id="insight-5-general" class="insight-content bg-insight-bg rounded-lg border-l-4 border-dark-accent">
+                    <p class="text-sm text-primary-text">
+                        O ponto de equilíbrio ótimo é dinâmico. O gestor busca o mix que maximiza a **Receita por Tonelada de Cana**. A flexibilidade permite capturar janelas de alta no açúcar ou na demanda interna por etanol, um diferencial competitivo que poucos países possuem.
+                    </p>
+                    <p class="text-xs text-gray-500 mt-2 font-semibold">Fonte: [CNA, UNICA Data]</p>
+                </div>
+
+            </div>
+        </section>
+
+        
+
+<section id="investimentos" class="content-section hidden">
+            <h2 class="text-3xl font-bold text-secondary-accent mb-4">5. Goiás: Mapa de Investimentos Estratégicos (2023–2025)</h2>
+            <p class="text-primary-text mb-6 border-b border-gray-200 pb-4">
+                Os recentes anúncios de investimento em Goiás, totalizando mais de **R$ 1,8 bilhão** nos principais projetos, sinalizam um foco claro na **resiliência tecnológica** e na **diversificação**. A chegada da usina de Etanol de 2ª Geração (E2G) da Raízen em Jataí e a expansão da capacidade de processamento de milho pela Cerradinho (Neomille) consolidam o estado como líder em valor agregado, indo além da produção primária [Portal Goiás, Portal 6 - Período 2023-2025].
+            </p>
+
+            <h3 class="text-2xl font-bold text-dark-accent mb-4 border-b border-gray-200 pb-2">Projetos de Alto Impacto</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                
+
+<div class="data-card bg-card-bg p-6 rounded-xl accent-l-green shadow-soft-lg">
+                    <p class="text-sm font-semibold text-gray-500">PROJETO E2G</p>
+                    <h4 class="text-xl font-bold text-primary-text">Raízen (Jataí)</h4>
+                    <p class="text-3xl font-extrabold text-secondary-accent mt-2">~ R$ 1,2 Bilhão</p>
+                    <p class="text-sm text-gray-500 mt-2">Tecnologia: Etanol de 2ª Geração (bagaço/palha). Prev. Operação ~2028. [Portal Goiás]</p>
+                </div>
+
+                
+
+<div class="data-card bg-card-bg p-6 rounded-xl accent-l-gold shadow-soft-lg">
+                    <p class="text-sm font-semibold text-gray-500">EXPANSÃO DUPLA</p>
+                    <h4 class="text-xl font-bold text-primary-text">Cerradinho Bio. (Chapadão)</h4>
+                    <p class="text-3xl font-extrabold text-dark-accent mt-2">~ R$ 430 Milhões</p>
+                    <p class="text-sm text-gray-500 mt-2">Inclui expansão Neomille (milho) + nova fábrica de Açúcar VHP (exportação). [Portal 6, Petrosolgas]</p>
+                </div>
+
+                
+
+<div class="data-card bg-card-bg p-6 rounded-xl accent-l-green shadow-soft-lg">
+                    <p class="text-sm font-semibold text-gray-500">REATIVAÇÃO</p>
+                    <h4 class="text-xl font-bold text-primary-text">Goiás Bioenergias (Porteirão)</h4>
+                    <p class="text-3xl font-extrabold text-secondary-accent mt-2">~ R$ 265 Milhões</p>
+                    <p class="text-sm text-gray-500 mt-2">Reativação de planta para mix cana + milho. Foco no aproveitamento de infraestrutura existente. [JornalCana+1]</p>
+                </div>
+            </div>
+
+            
+
+<button class="insight-toggle-btn w-full mt-8 py-3 px-4 bg-secondary-accent text-primary-light font-bold rounded-lg hover:bg-button-active transition duration-300" 
+                    onclick="toggleInsight('insight-6-general')">
+                Análise Estratégica: Risco Fiscal e Mobilidade
+            </button>
+            
+
+<div id="insight-6-general" class="insight-content bg-insight-bg rounded-lg border-l-4 border-dark-accent">
+                <p class="text-primary-text text-sm">
+                    O maior risco estratégico de Goiás não é o clima, mas a **dependência de incentivos fiscais** (R$ 5 a 15 bi em potencial). Se o estado falhar em ser o mais competitivo em política fiscal em relação a MT e MS, os projetos de etanol de milho (que têm alta mobilidade) podem ser realocados. A manutenção de um **regime fiscal atrativo** é tão crucial quanto o capital privado.
+                </p>
+                <p class="text-xs text-gray-500 mt-2 font-semibold">Fonte: [Empreender em Goiás - 2025]</p>
+            </div>
+        </section>
+
+        
+
+<section id="gargalo_humano" class="content-section hidden">
+            <h2 class="text-3xl font-bold text-secondary-accent mb-4">6. Gargalo Humano & Demanda por Qualificação em GO</h2>
+            <p class="text-primary-text mb-6 border-b border-gray-200 pb-4">
+                Com o avanço da **Agricultura de Precisão** e da **mecanização de 100%** (GPS, Telemetria), o setor enfrenta um déficit crítico de profissionais qualificados. A "dor nº1" reportada pelas usinas, inclusive em Goiás, é a falta de **Operadores de Colhedora de Cana e Tratoristas de Alta Precisão**, seguida de perto por especialistas em **Manutenção de Máquinas Pesadas** e em **Operações Industriais** (Caldeiras/NR-13) [Associvale+1, Agro FGV+1, 2024/2025].
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                
+
+<div class="data-card bg-card-bg p-6 rounded-xl accent-l-red shadow-soft-lg">
+                    <p class="text-sm font-semibold text-gray-500">DOR Nº 1 EM GO</p>
+                    <h4 class="text-xl font-bold text-primary-text">Operador(a) de Colhedora (AP)</h4>
+                    <p class="text-3xl font-extrabold text-highlight-red mt-2">Déficit Alto</p>
+                    <p class="text-sm text-gray-500 mt-2">Exige GPS/telemetria, piloto automático e CNH/CAT. Usinas de Jataí relatam dificuldade de contratação [Associvale, 2024/2025].</p>
+                </div>
+
+                
+
+<div class="data-card bg-card-bg p-6 rounded-xl accent-l-red shadow-soft-lg">
+                    <p class="text-sm font-semibold text-gray-500">GARGALO LOGÍSTICO</p>
+                    <h4 class="text-xl font-bold text-primary-text">Motorista Canavieiro/Logística</h4>
+                    <p class="text-3xl font-extrabold text-highlight-red mt-2">Déficit Crescente</p>
+                    <p class="text-sm text-gray-500 mt-2">Responsável pelo transbordo e comboio; alta exigência de segurança (NR-33/35) e pressão em pico de safra [Blog do Caminhoneiro].</p>
+                </div>
+
+                
+
+<div class="data-card bg-card-bg p-6 rounded-xl accent-l-red shadow-soft-lg">
+                    <p class="text-sm font-semibold text-gray-500">MOLÉCULA DE VALOR</p>
+                    <h4 class="text-xl font-bold text-primary-text">Técnico em Manutenção Pesada / Industrial</h4>
+                    <p class="text-3xl font-extrabold text-highlight-red mt-2">Demanda Especializada</p>
+                    <p class="text-sm text-gray-500 mt-2">Manutenção (hidráulica/elétrica) de colhedoras (Case IH + SENAI) e operação de utilidades (NR-13/Caldeiras). [SENAI, Agro FGV+1].</p>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-bold text-dark-accent mb-4 border-b border-gray-200 pb-2 mt-6">Recomendações Práticas em Goiás</h3>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+
+<div class="bg-gray-100 p-6 rounded-xl border-l-4 border-secondary-accent shadow-inner">
+                    <h4 class="text-xl font-bold text-secondary-accent mb-3">Solução: Trilhas "Safra-Prontas" (6-10 Semanas)</h4>
+                    <ul class="text-sm text-primary-text list-disc pl-5 space-y-2">
+                        <li>**Foco:** Operação (Colhedoras) e Manutenção de 1º Nível (Mecânica e Telemetria).</li>
+                        <li>**Modelo:** Aprendizagem Industrial Rural (*Dual*), usando a entressafra como período intensivo de formação (2022-2025).</li>
+                        <li>**Parceria:** Utilizar a estrutura de **SENAR/FAEG** e **SENAI** em GO, com laboratórios itinerantes de fabricantes [Sistema FAEG+1].</li>
+                    </ul>
+                </div>
+                
+                
+
+<div class="bg-gray-100 p-6 rounded-xl border-l-4 border-dark-accent shadow-inner">
+                    <h4 class="text-xl font-bold text-dark-accent mb-3">Estratégia: Retenção e Recrutamento Ativo</h4>
+                    <ul class="text-sm text-primary-text list-disc pl-5 space-y-2">
+                        <li>**Atração:** Recrutamento ativo em cidades-polo e programas para jovens (17-24 anos), aproveitando a queda dos "nem-nem" [IBGE/PNAD, 2024].</li>
+                        <li>**Certificação:** Implementar o Reconhecimento por Experiência (*RPL*) para acelerar a habilitação formal de operadores práticos.</li>
+                        <li>**Retenção:** Melhorar condições de alojamento, transporte e oferecer **trilha de carreira** (bônus por performance/safra) para compensar a rotina de turnos no interior.</li>
+                    </ul>
+                </div>
+            </div>
+
+            
+
+<button class="insight-toggle-btn w-full mt-8 py-3 px-4 bg-secondary-accent text-primary-light font-bold rounded-lg hover:bg-button-active transition duration-300" 
+                    onclick="toggleInsight('insight-7-general')">
+                Análise Estratégica: Mitigação de Risco Operacional
+            </button>
+            
+
+<div id="insight-7-general" class="insight-content bg-insight-bg rounded-lg border-l-4 border-dark-accent">
+                <p class="text-primary-text text-sm">
+                    A falta de qualificados eleva o **custo operacional** e limita a adoção de novas tecnologias. A parceria entre **Usina-Escola e SENAI/FAEG** é a rota mais rápida para mitigar este risco em Goiás. O foco deve ser em cursos modulares de alta intensidade que resolvam a escassez de Operadores de Colhedora e Especialistas em Manutenção Eletro-Hidráulica, perfis que garantem a eficiência da safra.
+                </p>
+                <p class="text-xs text-gray-500 mt-2 font-semibold">Fonte: [CNI/Observatório, 2024]</p>
+            </div>
+        </section>
+        
+        
+
+<section id="tecnologia_ia" class="content-section hidden">
+            <h2 class="text-3xl font-bold text-secondary-accent mb-4">7. Tecnologia & IA: A Virada da Usina 4.0 em Goiás</h2>
+            <p class="text-primary-text mb-6 border-b border-gray-200 pb-4">
+                A corrida por eficiência e valor agregado é impulsionada pela tecnologia. Goiás tem se destacado na adoção de soluções de **conectividade dedicada** (4G no canavial) e sistemas de **Otimização em Tempo Real (RTO)** na indústria. Essas ferramentas de inteligência artificial são cruciais para reduzir a variabilidade, maximizar o ATR recuperado e garantir a eficiência operacional em larga escala, do campo à destilaria [JornalCana+2, TIM Brasil+2, soteica+1].
+            </p>
+
+            <h3 class="text-2xl font-bold text-dark-accent mb-4 border-b border-gray-200 pb-2">Stack Tecnológico: Campo, Indústria e Sustentabilidade</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                
+
+<div class="data-card bg-card-bg p-6 rounded-xl accent-l-green shadow-soft-lg">
+                    <h4 class="text-xl font-bold text-secondary-accent mb-3"> Campo & Logística</h4>
+                    <ul class="text-sm text-primary-text list-disc pl-5 space-y-2">
+                        <li>**4G no Canavial (Jalles/TIM):** Cobertura dedicada para telemetria em tempo real. [TIM Brasil+2]</li>
+                        <li>**Guiagem de Precisão:** Piloto automático e monitoramento de frotas (Hexagon) para reduzir compactação e consumo. [Hexagon+1]</li>
+                        <li>**Irrigação Inteligente:** Protocolo BRCana/Embrapa (clima + solo) para uso eficiente da água no Cerrado. [Embrapa+1]</li>
+                    </ul>
+                </div>
+
+                
+
+<div class="data-card bg-card-bg p-6 rounded-xl accent-l-gold shadow-soft-lg">
+                    <h4 class="text-xl font-bold text-dark-accent mb-3"> Operações Industriais (IA)</h4>
+                    <ul class="text-sm text-primary-text list-disc pl-5 space-y-2">
+                        <li>**RTO/S-PAA:** Otimização em tempo real (Fermentação, Evaporação, Energia) em usinas como Jalles Machado e Goiasa. [JornalCana+2]</li>
+                        <li>**IA/Modelagem:** Ajuste contínuo de *set-points* para maximizar ATR recuperado, vapor e reduzir perdas. [soteica+1]</li>
+                        <li>**Segurança:** Detecção de fogo com IA, satélites e câmeras (investimento de R$ 180 mi em 25/26). [SIFAEG+2]</li>
+                    </ul>
+                </div>
+
+                
+
+<div class="data-card bg-card-bg p-6 rounded-xl accent-l-green shadow-soft-lg">
+                    <h4 class="text-xl font-bold text-secondary-accent mb-3"> Bioenergia & Sustentabilidade</h4>
+                    <ul class="text-sm text-primary-text list-disc pl-5 space-y-2">
+                        <li>**Biogás/Biometano:** Rotas de valor a partir de vinhaça e biochar de bagaço, alavancando receitas e créditos de carbono. [InvestNews+2]</li>
+                        <li>**RenovaCalc Integrada:** Medição do Carbono e geração de CBIOs vinculada a dados operacionais em tempo real. [InvestNews+2]</li>
+                        <li>**Portfólio Avançado:** Suporte tecnológico para rotas de Etanol de Milho, SAF e H2-v.</li>
+                    </ul>
+                </div>
+            </div>
+
+            
+
+<button class="insight-toggle-btn w-full mt-8 py-3 px-4 bg-secondary-accent text-primary-light font-bold rounded-lg hover:bg-button-active transition duration-300" 
+                    onclick="toggleInsight('insight-8-general')">
+                Análise Estratégica: O Salto da Eficiência Digital
+            </button>
+            
+
+<div id="insight-8-general" class="insight-content bg-insight-bg rounded-lg border-l-4 border-dark-accent">
+                <p class="text-primary-text text-sm">
+                    A adoção de RTO e IA na indústria sucroenergética (Usinas 4.0) é um fator-chave de competitividade. Em Goiás, a integração de **4G dedicado no campo** com **RTO na fábrica** permite um ciclo virtuoso: melhor matéria-prima, menos perdas industriais, maior eficiência energética e menor Intensidade de Carbono (IC) no RenovaBio. É o caminho para maximizar a receita em um ambiente de ATR pressionado pelo clima.
+                </p>
+                <p class="text-xs text-gray-500 mt-2 font-semibold">Fonte: [JornalCana, TIM Brasil, 2024/2025]</p>
+            </div>
+        </section>
+        
+        
+
+<section id="outlook" class="content-section hidden">
+            <h2 class="text-3xl font-bold text-secondary-accent mb-4">8. Outlook & Monitoramento: Tendências, Riscos e Indicadores</h2>
+            <p class="text-primary-text mb-6 border-b border-gray-200 pb-4">
+                O próximo triênio (2025-2028) será marcado pela implementação de novas políticas (E30), pela escalada da bioenergia 2.0 e por desafios persistentes de clima e qualificação. O sucesso de Goiás dependerá da sua capacidade de transformar riscos em oportunidades de valor agregado, com monitoramento rigoroso e adaptação tecnológica [Goiás Portal, Agência Brasil+3].
+            </p>
+
+            
+
+<h3 class="text-2xl font-bold text-dark-accent mb-4 border-b border-gray-200 pb-2">Tendências Chave e Oportunidades de Ouro</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                
+                <div class="data-card bg-card-bg p-4 rounded-xl accent-l-green shadow-soft-lg">
+                    <p class="text-sm font-semibold text-primary-text">E30 (Gasolina)</p>
+                    <p class="text-xl font-bold text-secondary-accent mt-1">Mais Etanol Anidro</p>
+                    <p class="text-xs text-gray-500 mt-2">Aumento da mistura na gasolina (a partir de 1º/ago/2025) gera demanda firme. [Forbes Brasil+3]</p>
+                </div>
+                
+                <div class="data-card bg-card-bg p-4 rounded-xl accent-l-green shadow-soft-lg">
+                    <p class="text-sm font-semibold text-primary-text">Bioenergia 2.0</p>
+                    <p class="text-xl font-bold text-secondary-accent mt-1">Biogás/Biometano</p>
+                    <p class="text-xs text-gray-500 mt-2">GO vira polo de biogás (Jalles/Albioma) e biochar (Atvos/NetZero), monetizando resíduos. [InvestNews+4]</p>
+                </div>
+                
+                <div class="data-card bg-card-bg p-4 rounded-xl accent-l-gold shadow-soft-lg">
+                    <p class="text-sm font-semibold text-primary-text">RTO + Mix</p>
+                    <p class="text-xl font-bold text-dark-accent mt-1">Governança Digital</p>
+                    <p class="text-xs text-gray-500 mt-2">Uso de IA para navegar volatilidade de preço e ATR, garantindo o melhor *trade-off*. [JornalCana+1]</p>
+                </div>
+                
+                <div class="data-card bg-card-bg p-4 rounded-xl accent-l-gold shadow-soft-lg">
+                    <p class="text-sm font-semibold text-primary-text">Go-to-Market GO</p>
+                    <p class="text-xl font-bold text-dark-accent mt-1">Açúcar Refinado Premium</p>
+                    <p class="text-xs text-gray-500 mt-2">Foco em refinado/valor agregado onde GO já recebe prêmio de 18,5% vs. média Brasil. [Goiás Portal]</p>
+                </div>
+            </div>
+
+            
+
+<h3 class="text-2xl font-bold text-highlight-red mb-4 border-b border-gray-200 pb-2 mt-6">Maiores Desafios e Riscos Imediatos</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="data-card bg-card-bg p-4 rounded-xl accent-l-red shadow-soft-lg">
+                    <p class="text-sm font-semibold text-primary-text">Produtividade sob Estresse</p>
+                    <p class="text-xl font-bold text-highlight-red mt-1">TCH e ATR Pressionados</p>
+                    <p class="text-xs text-gray-500 mt-2">Clima (calor/seca) causou viés negativo no Centro-Sul/GO (25/26), forçando disciplina no manejo e colheita. [Serviços e Informações do Brasil+1]</p>
+                </div>
+                <div class="data-card bg-card-bg p-4 rounded-xl accent-l-red shadow-soft-lg">
+                    <p class="text-sm font-semibold text-primary-text">Risco Fitossanitário</p>
+                    <p class="text-xl font-bold text-highlight-red mt-1">Síndrome da Murcha da Cana (SMC)</p>
+                    <p class="text-xs text-gray-500 mt-2">Problema emergente correlacionado a estresse hídrico e agentes bióticos, impactando TCH e ATR. [Agrolink+1]</p>
+                </div>
+            </div>
+
+            
+
+<h3 class="text-2xl font-bold text-secondary-accent mb-4 border-b border-gray-200 pb-2 mt-6">Indicadores Chave para Monitoramento Mensal</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="data-card bg-gray-100 p-4 rounded-xl border-l-4 border-secondary-accent shadow-inner">
+                    <p class="text-lg font-bold text-secondary-accent">CONAB & ATR/TCH</p>
+                    <p class="text-sm text-primary-text">Acompanhar 2º Levantamento da Safra (Produção, TCH, ATR) para ajuste de mix.</p>
+                    <p class="text-xs text-gray-500 mt-1">Fonte: [Serviços e Informações do Brasil]</p>
+                </div>
+                <div class="data-card bg-gray-100 p-4 rounded-xl border-l-4 border-secondary-accent shadow-inner">
+                    <p class="text-lg font-bold text-secondary-accent">SEAPA/GO & EXPORT</p>
+                    <p class="text-sm text-primary-text">Monitorar volume de exportação, destinos alternativos e prêmios de preço (CEPEA) para refinado.</p>
+                    <p class="text-xs text-gray-500 mt-1">Fonte: [Goiás Portal]</p>
+                </div>
+                <div class="data-card bg-gray-100 p-4 rounded-xl border-l-4 border-secondary-accent shadow-inner">
+                    <p class="text-lg font-bold text-secondary-accent">ANP & CBIOs</p>
+                    <p class="text-sm text-primary-text">Metas do RenovaBio e comunicados técnicos (RenovaCalc) para planejamento de crédito de carbono.</p>
+                    <p class="text-xs text-gray-500 mt-1">Fonte: [Serviços e Informações do Brasil+1]</p>
+                </div>
+            </div>
+
+            
+
+<button class="insight-toggle-btn w-full mt-8 py-3 px-4 bg-secondary-accent text-primary-light font-bold rounded-lg hover:bg-button-active transition duration-300" 
+                    onclick="toggleInsight('insight-9-general')">
+                Análise Estratégica: Rota de Crescimento 2028
+            </button>
+            
+
+<div id="insight-9-general" class="insight-content bg-insight-bg rounded-lg border-l-4 border-dark-accent">
+                <p class="text-primary-text text-sm">
+                    A convergência de **E30** (demandando mais anidro) e a expansão do **biogás/biometano** (valorizando resíduos) cria uma rota clara de crescimento rentável para Goiás até 2028. A melhoria logística via Ferrovia Norte-Sul e o foco no **açúcar refinado** com prêmio reforça o posicionamento de GO em **mercados de alto valor**, mitigando o risco de *commodity* pura e protegendo a margem contra choques climáticos.
+                </p>
+                <p class="text-xs text-gray-500 mt-2 font-semibold">Fonte: [Goiás Portal, Agência Brasil+3, Rumo Logística]</p>
+            </div>
+        </section>
+
+
+        
+
+<footer class="mt-12 pt-6 border-t border-gray-200">
+            <h3 class="text-lg font-bold text-primary-text mb-3">Fontes de Referência para Monitoramento Contínuo (Pesquisa 2024/2025)</h3>
+            <ul class="text-xs text-gray-500 list-disc pl-5 space-y-1">
+                <li>[UNICA+1] UNICA/UNICAdata: Produção, vendas, CBIOs e painéis de consumo.</li>
+                <li>[CNA, CONAB] Confederação da Agricultura e Pecuária, Companhia Nacional de Abastecimento: Projeções de Safra 2025/26.</li>
+                <li>[Embrapa+2] Embrapa, BRCana: Risco Climático, Modelagem APSIM e Irrigação Inteligente.</li>
+                <li>[assovale.com.br+1] Assovale, Blog do Caminhoneiro, Revista RPA News: Escassez de mão de obra e mecanização.</li>
+                <li>[Portal Goiás+1] Portal Goiás, SEAPA-GO, SIFAEG/SIFAÇÚCAR: Dados estaduais, Exportação, Ranking e Investimentos.</li>
+                <li>[Agro FGV+1] FGV/Agro, CNI/Observatório: Mercado de Trabalho e Desafios de Qualificação.</li>
+                <li>[Fitch Ratings+2] Fitch Ratings, Soluções Santander, jalles.com, Cana Online: Perfil Jalles Machado.</li>
+                <li>[JornalCana+1] Notícias setoriais, casos de RTO/IA (Goiasa e Jalles) e reativação de usinas.</li>
+                <li>[TIM Brasil+2] TIM/Telecom: Conectividade 4G no Agronegócio.</li>
+                <li>[InvestNews+4] InvestNews, Empreender em Goiás: Projetos de Biogás/Biometano e Biochar.</li>
+                <li>[Agência Brasil+3] Agência Brasil, Agência Gov, Forbes Brasil: Lei do Combustível do Futuro (E30) e macroeconomia.</li>
+                <li>[Serviços e Informações do Brasil+2] CONAB, ANP, Rumo Logística: Levantamentos oficiais, RenovaBio e Infraestrutura Ferroviária.</li>
+            </ul>
+
+            <!-- Atribuição do Especialista (Discreto) -->
+            <div class="mt-4 pt-2 border-t border-gray-100 text-right">
+                <p class="text-xs text-gray-400">
+                    Elaborado por: Antonio Balduino Neto - Especialista em Foresight Estratégico e Design de Futuros - Det/Fieg
+                </p>
+            </div>
+        </footer>
+
+    </main>
+
+    <script>
+        // Função para simular a interatividade de abas
+        function showSection(id) {
+            // Esconde todas as seções
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // Remove a classe 'active' de todos os botões de aba
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Esconde todos os insights (fecha insights de outras abas)
+            document.querySelectorAll('.insight-content').forEach(insight => {
+                insight.classList.remove('revealed');
+            });
+
+            // Mostra a seção desejada
+            document.getElementById(id).classList.remove('hidden');
+
+            // Adiciona a classe 'active' ao botão clicado
+            document.querySelector(`[onclick="showSection('${id}')"]`).classList.add('active');
+
+            // Se for o simulador, inicializa/atualiza o estado
+            if (id === 'simulador_mix') {
+                const slider = document.getElementById('mix-slider');
+                if (slider) updateMixSimulator(slider.value);
+            }
+        }
+
+        // Função para alternar a visibilidade do insight (Novo Requisito)
+        function toggleInsight(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.classList.toggle('revealed');
+            }
+        }
+
+        // Função para atualizar o simulador de mix
+        function updateMixSimulator(sugarMixValue) {
+            const sugarMix = parseInt(sugarMixValue);
+            const ethanolMix = 100 - sugarMix;
+
+            // 1. Atualiza os rótulos de mix
+            document.getElementById('label-sugar-mix').textContent = `Açúcar: ${sugarMix}%`;
+            document.getElementById('label-ethanol-mix').textContent = `Etanol: ${ethanolMix}%`;
+
+            // 2. Simulação de Impacto (Trade-Off)
+            const minMix = 35;
+            const maxMix = 65;
+            const range = maxMix - minMix;
+
+            // Métrica 1: Receita Potencial (Proporcional ao Açúcar)
+            // Normaliza o valor do slider (35 a 65) para uma escala de impacto (50% a 100%)
+            const revenueIndex = 50 + ((sugarMix - minMix) / range) * 50; 
+            const revenueWidth = Math.min(100, Math.max(50, revenueIndex)); // Garante o limite entre 50 e 100
+            
+            let revenueLevel;
+            if (revenueWidth > 90) revenueLevel = 'Máximo';
+            else if (revenueWidth > 75) revenueLevel = 'Alto';
+            else revenueLevel = 'Médio/Baixo';
+            
+            document.getElementById('revenue-impact-bar').style.width = `${revenueWidth}%`;
+            document.getElementById('revenue-level').textContent = revenueLevel;
+
+            // Métrica 2: Descarbonização/CBIOs (Proporcional ao Etanol)
+            const cbioIndex = 50 + ((ethanolMix - minMix) / range) * 50; 
+            const cbioWidth = Math.min(100, Math.max(50, cbioIndex));
+            
+            let cbioLevel;
+            if (cbioWidth > 90) cbioLevel = 'Máximo';
+            else if (cbioWidth > 75) cbioLevel = 'Alto';
+            else cbioLevel = 'Médio/Baixo';
+
+            document.getElementById('cbio-impact-bar').style.width = `${cbioWidth}%`;
+            document.getElementById('cbio-level').textContent = cbioLevel;
+        }
+
+        // Inicializa a primeira seção e garante que as barras de moagem tenham o tamanho correto
+        document.addEventListener('DOMContentLoaded', () => {
+             showSection('panorama'); // Inicia no panorama
+
+             // Adiciona a animação de largura das barras (Projeção de Aperto 2025/26)
+             const moagemBar = document.querySelector('#panorama .space-y-4 div:nth-child(1) .chart-bar');
+             const prodBar = document.querySelector('#panorama .space-y-4 div:nth-child(2) .chart-bar');
+             const atrBar = document.querySelector('#panorama .space-y-4 div:nth-child(3) .chart-bar');
+
+             // Simula o tamanho relativo do recuo
+             if (moagemBar) moagemBar.style.width = '4.6%';
+             if (prodBar) prodBar.style.width = '4.1%';
+             if (atrBar) atrBar.style.width = '1.6%';
+
+             // Garante que o simulador comece no estado correto
+             const slider = document.getElementById('mix-slider');
+             if (slider) updateMixSimulator(slider.value);
+        });
+    </script>
+
+</body>
+</html>
