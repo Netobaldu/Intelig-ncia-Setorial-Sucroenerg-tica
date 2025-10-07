@@ -149,9 +149,8 @@
 
     <main class="max-w-7xl mx-auto bg-primary-light p-6 md:p-10 rounded-3xl shadow-soft-xl border border-gray-100">
 
-        
-
-<div class="flex flex-wrap justify-center mb-8 border-b border-gray-200 pb-3">
+        <!-- Navegação Interativa -->
+        <div class="flex flex-wrap justify-center mb-8 border-b border-gray-200 pb-3">
             <button class="tab-button py-3 px-5 text-sm md:text-base font-medium text-primary-text bg-gray-100" onclick="showSection('panorama')">
                 1. Safra Recorde & Projeção
             </button>
@@ -176,11 +175,16 @@
             <button class="tab-button py-3 px-5 text-sm md:text-base font-medium text-primary-text bg-gray-100" onclick="showSection('outlook')">
                 8. Outlook & Monitoramento
             </button>
+            <button class="tab-button py-3 px-5 text-sm md:text-base font-medium text-primary-text bg-gray-100" onclick="showSection('conclusao')">
+                9. Conclusão Estratégica
+            </button>
+            <button class="tab-button py-3 px-5 text-sm md:text-base font-medium text-primary-text bg-gray-100" onclick="showSection('fontes')">
+                10. Fontes de Referência
+            </button>
         </div>
 
-        
-
-<section id="panorama" class="content-section">
+        <!-- Seção 1: Safra Recorde & Projeção 2025/26 -->
+        <section id="panorama" class="content-section">
             <h2 class="text-3xl font-bold text-secondary-accent mb-4">1. Ciclo 2024/25: Recordes Atingidos e Aperto de 2025/26</h2>
             <p class="text-primary-text mb-6 border-b border-gray-200 pb-4">
                 A safra 2024/25, encerrada em abril, marcou **recordes históricos de produção e vendas de etanol** no Centro-Sul, impulsionados pela demanda interna e condições de mercado favoráveis. No entanto, o cenário para 2025/26 é de cautela, com projeções de **retração na moagem e na qualidade da cana (ATR)**, resultado direto da irregularidade climática que impactou o desenvolvimento da lavoura no início do ciclo anterior.
@@ -846,32 +850,71 @@
         </section>
 
 
-        
+        <!-- Seção 9: Conclusão Estratégica (Nova) -->
+        <section id="conclusao" class="content-section hidden">
+            <h2 class="text-3xl font-bold text-secondary-accent mb-4">9. Conclusão Estratégica: Goiás no Centro da Bioenergia 2.0</h2>
+            <p class="text-primary-text mb-6 border-b border-gray-200 pb-4">
+                O setor sucroenergético brasileiro navega entre o **risco climático (ATR pressionado)** e a **oportunidade da descarbonização** global. Goiás emerge como um polo de **resiliência e inovação**, graças à sua capacidade de integrar o **Etanol de Milho** (garantindo produção 12 meses) e atrair investimentos de alta tecnologia (E2G e Biometano).
+            </p>
 
-<footer class="mt-12 pt-6 border-t border-gray-200">
-            <h3 class="text-lg font-bold text-primary-text mb-3">Fontes de Referência para Monitoramento Contínuo (Pesquisa 2024/2025)</h3>
-            <ul class="text-xs text-gray-500 list-disc pl-5 space-y-1">
-                <li>[UNICA+1] UNICA/UNICAdata: Produção, vendas, CBIOs e painéis de consumo.</li>
-                <li>[CNA, CONAB] Confederação da Agricultura e Pecuária, Companhia Nacional de Abastecimento: Projeções de Safra 2025/26.</li>
-                <li>[Embrapa+2] Embrapa, BRCana: Risco Climático, Modelagem APSIM e Irrigação Inteligente.</li>
-                <li>[assovale.com.br+1] Assovale, Blog do Caminhoneiro, Revista RPA News: Escassez de mão de obra e mecanização.</li>
-                <li>[Portal Goiás+1] Portal Goiás, SEAPA-GO, SIFAEG/SIFAÇÚCAR: Dados estaduais, Exportação, Ranking e Investimentos.</li>
-                <li>[Agro FGV+1] FGV/Agro, CNI/Observatório: Mercado de Trabalho e Desafios de Qualificação.</li>
-                <li>[Fitch Ratings+2] Fitch Ratings, Soluções Santander, jalles.com, Cana Online: Perfil Jalles Machado.</li>
-                <li>[JornalCana+1] Notícias setoriais, casos de RTO/IA (Goiasa e Jalles) e reativação de usinas.</li>
-                <li>[TIM Brasil+2] TIM/Telecom: Conectividade 4G no Agronegócio.</li>
-                <li>[InvestNews+4] InvestNews, Empreender em Goiás: Projetos de Biogás/Biometano e Biochar.</li>
-                <li>[Agência Brasil+3] Agência Brasil, Agência Gov, Forbes Brasil: Lei do Combustível do Futuro (E30) e macroeconomia.</li>
-                <li>[Serviços e Informações do Brasil+2] CONAB, ANP, Rumo Logística: Levantamentos oficiais, RenovaBio e Infraestrutura Ferroviária.</li>
-            </ul>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Conclusão 1: Resiliência e Inovação -->
+                <div class="data-card bg-card-bg p-6 rounded-xl accent-l-green shadow-soft-lg">
+                    <h3 class="text-xl font-bold text-secondary-accent mb-3">Rumo à Maturação Tecnológica</h3>
+                    <p class="text-primary-text text-sm">
+                        O futuro de Goiás reside na **eficiência digital** (RTO e 4G no campo) e no **capital humano** treinado para operar esta nova frota e indústria 4.0. A disputa por operadores de colhedora de alta precisão é o principal gargalo a ser mitigado urgentemente.
+                    </p>
+                </div>
 
-            <!-- Atribuição do Especialista (Discreto) -->
-            <div class="mt-4 pt-2 border-t border-gray-100 text-right">
-                <p class="text-xs text-gray-400">
-                    Elaborado por: Antonio Balduino Neto - Especialista em Foresight Estratégico e Design de Futuros - Det/Fieg
+                <!-- Conclusão 2: Foco em Valor e Demanda -->
+                <div class="data-card bg-card-bg p-6 rounded-xl accent-l-gold shadow-soft-lg">
+                    <h3 class="text-xl font-bold text-dark-accent mb-3">Vantagem do Valor Agregado</h3>
+                    <p class="text-primary-text text-sm">
+                        O mix favorece o **açúcar VHP** (mercado global) no curto prazo, mas a demanda por **Etanol Anidro (E30)** e a monetização via **CBIOs/Biogás** criam uma base de receita mais estável e alinhada às metas de baixo carbono, reduzindo a dependência da volatilidade do petróleo.
+                    </p>
+                </div>
+            </div>
+
+            <p class="text-sm text-primary-text mt-4">
+                Em resumo, o desafio é manter a competitividade fiscal para atrair capital (milho e E2G) e, simultaneamente, investir agressivamente na formação de mão de obra que possa extrair o máximo valor das tecnologias já instaladas.
+            </p>
+
+            <!-- Atribuição do Especialista (No bloco conclusivo, discreto) -->
+            <div class="mt-8 pt-4 border-t border-gray-200 text-center">
+                <p class="text-sm text-secondary-accent font-semibold mb-1">
+                    Análise e Síntese Final
+                </p>
+                <p class="text-xs text-gray-500">
+                    Antonio Balduino Neto - Especialista em Foresight Estratégico e Design de Futuros - Det/Fieg
                 </p>
             </div>
-        </footer>
+        </section>
+
+
+        <!-- Seção 10: Fontes de Referência (Antigo Rodapé) -->
+        <section id="fontes" class="content-section hidden">
+            <h2 class="text-3xl font-bold text-dark-accent mb-6">10. Fontes de Referência para Monitoramento Contínuo</h2>
+            <p class="text-primary-text mb-6">
+                A precisão e a atualização desta análise foram baseadas em dados e relatórios oficiais e setoriais de 2024 e 2025.
+            </p>
+
+            <div class="bg-gray-100 p-6 rounded-xl shadow-soft-lg border border-gray-200">
+                <ul class="text-sm text-primary-text list-disc pl-5 space-y-2">
+                    <li>[UNICA+1] UNICA/UNICAdata: Produção, vendas, CBIOs e painéis de consumo.</li>
+                    <li>[CNA, CONAB] Confederação da Agricultura e Pecuária, Companhia Nacional de Abastecimento: Projeções de Safra 2025/26.</li>
+                    <li>[Embrapa+2] Embrapa, BRCana: Risco Climático, Modelagem APSIM e Irrigação Inteligente.</li>
+                    <li>[assovale.com.br+1] Assovale, Blog do Caminhoneiro, Revista RPA News: Escassez de mão de obra e mecanização.</li>
+                    <li>[Portal Goiás+1] Portal Goiás, SEAPA-GO, SIFAEG/SIFAÇÚCAR: Dados estaduais, Exportação, Ranking e Investimentos.</li>
+                    <li>[Agro FGV+1] FGV/Agro, CNI/Observatório: Mercado de Trabalho e Desafios de Qualificação.</li>
+                    <li>[Fitch Ratings+2] Fitch Ratings, Soluções Santander, jalles.com, Cana Online: Perfil Jalles Machado.</li>
+                    <li>[JornalCana+1] Notícias setoriais, casos de RTO/IA (Goiasa e Jalles) e reativação de usinas.</li>
+                    <li>[TIM Brasil+2] TIM/Telecom: Conectividade 4G no Agronegócio.</li>
+                    <li>[InvestNews+4] InvestNews, Empreender em Goiás: Projetos de Biogás/Biometano e Biochar.</li>
+                    <li>[Agência Brasil+3] Agência Brasil, Agência Gov, Forbes Brasil: Lei do Combustível do Futuro (E30) e macroeconomia.</li>
+                    <li>[Serviços e Informações do Brasil+2] CONAB, ANP, Rumo Logística: Levantamentos oficiais, RenovaBio e Infraestrutura Ferroviária.</li>
+                </ul>
+            </div>
+        </section>
 
     </main>
 
